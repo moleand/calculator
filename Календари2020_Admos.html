@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            font-family: 'Rubik', sans-serif;
+            font-weight: 400;
+            color: #3f3356;
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex: 0 1 1180px;
+            padding: 32px 32px 64px;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .is-two-thirds {
+            width: 70%;
+        }
+
+        .is-one-third {
+            width: 25%;
+        }
+
+        .total {
+            position: sticky;
+            top: 40px;
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-top: 32px;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        span {
+            color: #9E9EC1;
+            font-weight: 400;
+            font-size: 12px;
+        }
+
+        .radio-wrapper {
+            display: flex;
+        }
+
+        .radio-wrapper+.radio-wrapper {
+            margin-top: 16px;
+        }
+
+        .box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f7f7f7;
+            padding: 32px 24px;
+            flex: 0 1 30%;
+            cursor: pointer;
+        }
+
+        .cards {
+            display: flex;
+        }
+
+        .card {
+            text-align: center;
+            width: 30%;
+        }
+
+        .card+.card {
+            margin-left: 16px;
+        }
+
+        input {
+            display: none;
+        }
+
+        label {
+            background: #eee;
+            border-radius: 4px;
+            padding: 16px 24px;
+            text-align: center;
+            max-width: 30%;
+            width: auto;
+            margin-right: 8px;
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.07);
+            display: block;
+            border: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        label:hover {
+            background: #ccc;
+        }
+
+        input:checked+label {
+            background: #F6F8FF;
+            border: 1px solid #566FFF;
+        }
+
+        .result {
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .select-css {
+            display: block;
+            font-size: 15px;
+            padding: 16px 24px;
+            box-sizing: border-box;
+            margin: 0;
+            border: 1px solid #d4dadf;
+            border-radius: 4px;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #fff;
+
+        }
+
+        .select-css::-ms-expand {
+            display: none;
+        }
+
+        .select-css:hover {
+            border-color: #eee;
+        }
+
+        .select-css:focus {
+            border: 1px solid #566FFF;
+            outline: none;
+        }
+
+        .select-css option {
+            font-weight: normal;
+        }
+
+        .result-per-count {
+            color: #9E9EC1;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,500,700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div class="column is-two-thirds">
+            <h1>Календари</h1>
+            <h2>Размер</h2>
+            <div class="radio-wrapper product-types">
+                <input type="radio" id="mini" value="Мини" v-model="product_type">
+                <label for="mini">МИНИ</label>
+                <input type="radio" id="midi" value="Миди" v-model="product_type" checked>
+                <label for="midi">МИДИ</label>
+                <input type="radio" id="maxi" value="Макси" v-model="product_type" disabled>
+                <label for="maxi">МАКСИ</label>
+            </div>
+            <h2>Количество подложек</h2>
+            <div class="radio-wrapper back-count">
+                <input type="radio" id="three" value="3" v-model="back_count">
+                <label for="three">Постер и 3 подложки</label>
+                <input type="radio" id="one" value="1" v-model="back_count">
+                <label for="one">Постер и 1 подложка</label>
+            </div>
+            <h2>Тип подложки</h2>
+            <div class="radio-wrapper paper">
+                <input type="radio" id="karton" value="Картон" v-model="paper">
+                <label for="karton">Картон<br><span>односторонний 305 гр.</span></label>
+                <input type="radio" id="cappa" value="Каппа" v-model="paper">
+                <label for="cappa">Каппа 1.5мм<br><span>белый оборот, лайнер 200 гр.</span></label>
+                <input type="radio" id="poster" value="Постер" v-model="paper">
+                <label for="poster">Магнитный<br><span>постер или одна подложка</span></label>
+            </div>
+            <h2>Блок</h2>
+            <div class="radio-wrapper paper">
+                <input type="radio" id="polymat" value="Полимат" v-model="block">
+                <label for="polymat">Полимат</label>
+                <input type="radio" id="invididual" value="Индивидуальный" v-model="block" disabled>
+                <label for="invididual">Индивидуальный</label>
+            </div>
+            <h2>Дополнительные работы</h2>
+            <div class="radio-wrapper addition">
+                <input type="checkbox" id="varnish" v-model="varnish">
+                <label for="varnish">УФ лак<br><span>1+0 на постере</span></label>
+                <input type="checkbox" id="cut" v-model="cut">
+                <label for="cut">Вырубка<br><span>включая штамп</span></label>
+                <input type="checkbox" id="sticker" v-model="sticker">
+                <label for="sticker">Наклейка<br><span>335 * 170 мм с надсечкой</span></label>
+                <input type="checkbox" id="package" v-model="package">
+                <label for="package">Упаковка<br><span>индивидуальная</span></label>
+            </div>
+            <h2>Тираж</h2>
+            <div class="radio-wrapper count">
+                <select v-model="count" class="select-css">
+                    <option disabled value="">Выберите один из вариантов</option>
+                    <option selected="selected">50 шт.</option>
+                    <option>100 шт.</option>
+                    <option>150 шт.</option>
+                    <option>200 шт.</option>
+                    <option>250 шт.</option>
+                    <option>300 шт.</option>
+                    <option>400 шт.</option>
+                    <option>500 шт.</option>
+                    <option>600 шт.</option>
+                    <option>700 шт.</option>
+                    <option>800 шт.</option>
+                    <option>900 шт.</option>
+                    <option>1 000 шт.</option>
+                    <option>1 100 шт.</option>
+                    <option>1 200 шт.</option>
+                    <option>1 300 шт.</option>
+                    <option>1 400 шт.</option>
+                    <option>1 500 шт.</option>
+                    <option>1 600 шт.</option>
+                    <option>1 700 шт.</option>
+                    <option>1 800 шт.</option>
+                    <option>1 900 шт.</option>
+                    <option>2 000 шт.</option>
+                </select>
+            </div>
+        </div>
+        <div class="column is-one-third">
+            <div class="total">
+                <img :src="back_count === '3' ? 'assets/three.png' : 'assets/one.png'" alt="" width="100%">
+                <h2 style="color: #566FFF; margin-bottom: 16px; font-size: 40px; margin-top: 80px">Итого:</h2>
+                <div class="result">{{result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}} руб.</div>
+                <div class="result-per-count">
+                    {{ Math.round(result/parseInt(count.replace(/\s/g, '')), 0) }} руб. /
+                    шт.</div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                product_type: 'Миди',
+                back_count: '3',
+                block: 'Полимат',
+                paper: 'Картон',
+                varnish: false,
+                package: false,
+                sticker: false,
+                cut: false,
+                count: '50 шт.',
+
+            },
+            computed: {
+                costPerOne: function () {
+                    return this.result / parseInt(this.count)
+                },
+                result: function () {
+                    let result = 0;
+                    let varnishSum = 0;
+                    let packageSum = 0;
+                    let stickerSum = 0;
+                    let cutSum = 0;
+
+                    if (this.product_type === 'Миди') {
+                        if (this.paper === 'Картон') {
+                            if (this.back_count === '3') {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 13000;
+                                        break;
+                                    case '100 шт.':
+                                        result = 18000;
+                                        break;
+                                    case '150 шт.':
+                                        result = 24000;
+                                        break;
+                                    case '200 шт.':
+                                        result = 29600;
+                                        break;
+                                    case '250 шт.':
+                                        result = 35500;
+                                        break;
+                                    case '300 шт.':
+                                        result = 41100;
+                                        break;
+                                    case '400 шт.':
+                                        result = 52800;
+                                        break;
+                                    case '500 шт.':
+                                        result = 64000;
+                                        break;
+                                    case '600 шт.':
+                                        result = 75600;
+                                        break;
+                                    case '700 шт.':
+                                        result = 84000;
+                                        break;
+                                    case '800 шт.':
+                                        result = 99200;
+                                        break;
+                                    case '900 шт.':
+                                        result = 109800;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 120000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 130900;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 141600;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 152100;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 162400;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 172500;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 182400;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 192100;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 201600;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 210900;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 220000;
+                                        break;
+                                }
+                            } else {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 12000;
+                                        break;
+                                    case '100 шт.':
+                                        result = 16500;
+                                        break;
+                                    case '150 шт.':
+                                        result = 21750;
+                                        break;
+                                    case '200 шт.':
+                                        result = 27400;
+                                        break;
+                                    case '250 шт.':
+                                        result = 33000;
+                                        break;
+                                    case '300 шт.':
+                                        result = 38400;
+                                        break;
+                                    case '400 шт.':
+                                        result = 49600;
+                                        break;
+                                    case '500 шт.':
+                                        result = 60500;
+                                        break;
+                                    case '600 шт.':
+                                        result = 71400;
+                                        break;
+                                    case '700 шт.':
+                                        result = 82600;
+                                        break;
+                                    case '800 шт.':
+                                        result = 93600;
+                                        break;
+                                    case '900 шт.':
+                                        result = 104400;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 115000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 125400;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 135600;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 145600;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 155400;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 165000;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 174400;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 183600;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 192600;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 201400;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 210000;
+                                        break;
+                                }
+                            }
+                        } else if (this.paper === 'Каппа') {
+                            if (this.back_count === '3') {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 17000;
+                                        break;
+                                    case '100 шт.':
+                                        result = 26000;
+                                        break;
+                                    case '150 шт.':
+                                        result = 36000;
+                                        break;
+                                    case '200 шт.':
+                                        result = 45600;
+                                        break;
+                                    case '250 шт.':
+                                        result = 55500;
+                                        break;
+                                    case '300 шт.':
+                                        result = 65100;
+                                        break;
+                                    case '400 шт.':
+                                        result = 84800;
+                                        break;
+                                    case '500 шт.':
+                                        result = 104000;
+                                        break;
+                                    case '600 шт.':
+                                        result = 123600;
+                                        break;
+                                    case '700 шт.':
+                                        result = 143500;
+                                        break;
+                                    case '800 шт.':
+                                        result = 163200;
+                                        break;
+                                    case '900 шт.':
+                                        result = 181800;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 200000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 218900;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 237600;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 256100;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 274400;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 292500;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 310400;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 328100;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 345600;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 362900;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 380000;
+                                        break;
+                                }
+                            } else {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 16000;
+                                        break;
+                                    case '100 шт.':
+                                        result = 24500;
+                                        break;
+                                    case '150 шт.':
+                                        result = 33750;
+                                        break;
+                                    case '200 шт.':
+                                        result = 43400;
+                                        break;
+                                    case '250 шт.':
+                                        result = 53000;
+                                        break;
+                                    case '300 шт.':
+                                        result = 62400;
+                                        break;
+                                    case '400 шт.':
+                                        result = 81600;
+                                        break;
+                                    case '500 шт.':
+                                        result = 100500;
+                                        break;
+                                    case '600 шт.':
+                                        result = 119400;
+                                        break;
+                                    case '700 шт.':
+                                        result = 138600;
+                                        break;
+                                    case '800 шт.':
+                                        result = 157600;
+                                        break;
+                                    case '900 шт.':
+                                        result = 176400;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 195000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 213400;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 231600;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 249600;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 267400;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 285000;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 302400;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 319600;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 336600;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 353400;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 370000;
+                                        break;
+                                }
+                            }
+                        } else {
+                            if (this.back_count === '3') {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 19000;
+                                        break;
+                                    case '100 шт.':
+                                        result = 30000;
+                                        break;
+                                    case '150 шт.':
+                                        result = 42000;
+                                        break;
+                                    case '200 шт.':
+                                        result = 53600;
+                                        break;
+                                    case '250 шт.':
+                                        result = 65500;
+                                        break;
+                                    case '300 шт.':
+                                        result = 76500;
+                                        break;
+                                    case '400 шт.':
+                                        result = 99600;
+                                        break;
+                                    case '500 шт.':
+                                        result = 122000;
+                                        break;
+                                    case '600 шт.':
+                                        result = 145200;
+                                        break;
+                                    case '700 шт.':
+                                        result = 168000;
+                                        break;
+                                    case '800 шт.':
+                                        result = 190400;
+                                        break;
+                                    case '900 шт.':
+                                        result = 211500;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 232000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 253000;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 273600;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 295100;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 317800;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 337500;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 358400;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 379100;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 399600;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 419900;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 440000;
+                                        break;
+                                }
+                            } else {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 18000;
+                                        break;
+                                    case '100 шт.':
+                                        result = 28500;
+                                        break;
+                                    case '150 шт.':
+                                        result = 44250;
+                                        break;
+                                    case '200 шт.':
+                                        result = 51400;
+                                        break;
+                                    case '250 шт.':
+                                        result = 63000;
+                                        break;
+                                    case '300 шт.':
+                                        result = 73800;
+                                        break;
+                                    case '400 шт.':
+                                        result = 96400;
+                                        break;
+                                    case '500 шт.':
+                                        result = 119000;
+                                        break;
+                                    case '600 шт.':
+                                        result = 141000;
+                                        break;
+                                    case '700 шт.':
+                                        result = 163100;
+                                        break;
+                                    case '800 шт.':
+                                        result = 184800;
+                                        break;
+                                    case '900 шт.':
+                                        result = 206100;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 227000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 247500;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 267600;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 288600;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 309400;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 330000;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 350400;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 370600;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 390600;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 410400;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 430000;
+                                        break;
+                                }
+                            }
+                        }
+                    } else if (this.product_type === 'Мини') {
+                        if (this.paper === 'Картон') {
+                            if (this.back_count === '3') {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 8000;
+                                        break;
+                                    case '100 шт.':
+                                        result = 13600;
+                                        break;
+                                    case '150 шт.':
+                                        result = 20100;
+                                        break;
+                                    case '200 шт.':
+                                        result = 27600;
+                                        break;
+                                    case '250 шт.':
+                                        result = 32500;
+                                        break;
+                                    case '300 шт.':
+                                        result = 37500;
+                                        break;
+                                    case '400 шт.':
+                                        result = 47600;
+                                        break;
+                                    case '500 шт.':
+                                        result = 58000;
+                                        break;
+                                    case '600 шт.':
+                                        result = 67800;
+                                        break;
+                                    case '700 шт.':
+                                        result = 78400;
+                                        break;
+                                    case '800 шт.':
+                                        result = 88800;
+                                        break;
+                                    case '900 шт.':
+                                        result = 99000;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 109000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 118800;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 128400;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 137800;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 147000;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 156000;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 164800;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 173400;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 181800;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 190000;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 198000;
+                                        break;
+                                }
+                            } else {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 7800;
+                                        break;
+                                    case '100 шт.':
+                                        result = 12600;
+                                        break;
+                                    case '150 шт.':
+                                        result = 18150;
+                                        break;
+                                    case '200 шт.':
+                                        result = 23800;
+                                        break;
+                                    case '250 шт.':
+                                        result = 29500;
+                                        break;
+                                    case '300 шт.':
+                                        result = 34800;
+                                        break;
+                                    case '400 шт.':
+                                        result = 44800;
+                                        break;
+                                    case '500 шт.':
+                                        result = 54500;
+                                        break;
+                                    case '600 шт.':
+                                        result = 64200;
+                                        break;
+                                    case '700 шт.':
+                                        result = 74200;
+                                        break;
+                                    case '800 шт.':
+                                        result = 84000;
+                                        break;
+                                    case '900 шт.':
+                                        result = 93600;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 103000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 112200;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 121200;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 130000;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 138600;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 147000;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 155200;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 163200;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 171000;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 178600;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 186000;
+                                        break;
+                                }
+                            }
+                        } else if (this.paper === 'Каппа') {
+                            if (this.back_count === '3') {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 12500;
+                                        break;
+                                    case '100 шт.':
+                                        result = 24000;
+                                        break;
+                                    case '150 шт.':
+                                        result = 33000;
+                                        break;
+                                    case '200 шт.':
+                                        result = 38000;
+                                        break;
+                                    case '250 шт.':
+                                        result = 46000;
+                                        break;
+                                    case '300 шт.':
+                                        result = 54000;
+                                        break;
+                                    case '400 шт.':
+                                        result = 676000;
+                                        break;
+                                    case '500 шт.':
+                                        result = 83000;
+                                        break;
+                                    case '600 шт.':
+                                        result = 97800;
+                                        break;
+                                    case '700 шт.':
+                                        result = 112700;
+                                        break;
+                                    case '800 шт.':
+                                        result = 128000;
+                                        break;
+                                    case '900 шт.':
+                                        result = 143100;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 158000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 172700;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 187200;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 201500;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 215600;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 229500;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 243200;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 256700;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 270000;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 283100;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 296000;
+                                        break;
+                                }
+                            } else {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 12250;
+                                        break;
+                                    case '100 шт.':
+                                        result = 22000;
+                                        break;
+                                    case '150 шт.':
+                                        result = 28050;
+                                        break;
+                                    case '200 шт.':
+                                        result = 35800;
+                                        break;
+                                    case '250 шт.':
+                                        result = 43500;
+                                        break;
+                                    case '300 шт.':
+                                        result = 50100;
+                                        break;
+                                    case '400 шт.':
+                                        result = 64000;
+                                        break;
+                                    case '500 шт.':
+                                        result = 77500;
+                                        break;
+                                    case '600 шт.':
+                                        result = 92400;
+                                        break;
+                                    case '700 шт.':
+                                        result = 107100;
+                                        break;
+                                    case '800 шт.':
+                                        result = 121600;
+                                        break;
+                                    case '900 шт.':
+                                        result = 135900;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 150000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 163900;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 177600;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 191000;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 204400;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 217500;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 230400;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 243100;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 255600;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 267900;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 280000;
+                                        break;
+                                }
+                            }
+                        } else {
+                            if (this.back_count === '3') {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 14250;
+                                        break;
+                                    case '100 шт.':
+                                        result = 28000;
+                                        break;
+                                    case '150 шт.':
+                                        result = 35250;
+                                        break;
+                                    case '200 шт.':
+                                        result = 45000;
+                                        break;
+                                    case '250 шт.':
+                                        result = 54750;
+                                        break;
+                                    case '300 шт.':
+                                        result = 64500;
+                                        break;
+                                    case '400 шт.':
+                                        result = 81600;
+                                        break;
+                                    case '500 шт.':
+                                        result = 100500;
+                                        break;
+                                    case '600 шт.':
+                                        result = 118800;
+                                        break;
+                                    case '700 шт.':
+                                        result = 137200;
+                                        break;
+                                    case '800 шт.':
+                                        result = 156000;
+                                        break;
+                                    case '900 шт.':
+                                        result = 174600;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 193000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 211200;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 229200;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 247000;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 264600;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 282000;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 299200;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 316200;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 333000;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 349600;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 366000;
+                                        break;
+                                }
+                            } else {
+                                switch (this.count) {
+                                    case '50 шт.':
+                                        result = 14000;
+                                        break;
+                                    case '100 шт.':
+                                        result = 25500;
+                                        break;
+                                    case '150 шт.':
+                                        result = 33300;
+                                        break;
+                                    case '200 шт.':
+                                        result = 42800;
+                                        break;
+                                    case '250 шт.':
+                                        result = 52250;
+                                        break;
+                                    case '300 шт.':
+                                        result = 60600;
+                                        break;
+                                    case '400 шт.':
+                                        result = 78000;
+                                        break;
+                                    case '500 шт.':
+                                        result = 95000;
+                                        break;
+                                    case '600 шт.':
+                                        result = 113400;
+                                        break;
+                                    case '700 шт.':
+                                        result = 131600;
+                                        break;
+                                    case '800 шт.':
+                                        result = 149600;
+                                        break;
+                                    case '900 шт.':
+                                        result = 167400;
+                                        break;
+                                    case '1 000 шт.':
+                                        result = 185000;
+                                        break;
+                                    case '1 100 шт.':
+                                        result = 202400;
+                                        break;
+                                    case '1 200 шт.':
+                                        result = 219600;
+                                        break;
+                                    case '1 300 шт.':
+                                        result = 236600;
+                                        break;
+                                    case '1 400 шт.':
+                                        result = 253400;
+                                        break;
+                                    case '1 500 шт.':
+                                        result = 270000;
+                                        break;
+                                    case '1 600 шт.':
+                                        result = 286400;
+                                        break;
+                                    case '1 700 шт.':
+                                        result = 302600;
+                                        break;
+                                    case '1 800 шт.':
+                                        result = 318600;
+                                        break;
+                                    case '1 900 шт.':
+                                        result = 334400;
+                                        break;
+                                    case '2 000 шт.':
+                                        result = 350000;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    if (this.varnish == true) {
+                        switch (this.count) {
+                            case '50 шт.':
+                                varnishSum = 3500;
+                                break;
+                            case '100 шт.':
+                                varnishSum = 3800;
+                                break;
+                            case '150 шт.':
+                                varnishSum = 4200;
+                                break;
+                            case '200 шт.':
+                                varnishSum = 4400;
+                                break;
+                            case '250 шт.':
+                                varnishSum = 4600;
+                                break;
+                            case '300 шт.':
+                                varnishSum = 4800;
+                                break;
+                            case '400 шт.':
+                                varnishSum = 5200;
+                                break;
+                            case '500 шт.':
+                                varnishSum = 5600;
+                                break;
+                            case '600 шт.':
+                                varnishSum = 5900;
+                                break;
+                            case '700 шт.':
+                                varnishSum = 6400;
+                                break;
+                            case '800 шт.':
+                                varnishSum = 6800;
+                                break;
+                            case '900 шт.':
+                                varnishSum = 7200;
+                                break;
+                            case '1 000 шт.':
+                                varnishSum = 7700;
+                                break;
+                            case '1 100 шт.':
+                                varnishSum = 8100;
+                                break;
+                            case '1 200 шт.':
+                                varnishSum = 8500;
+                                break;
+                            case '1 300 шт.':
+                                varnishSum = 8900;
+                                break;
+                            case '1 400 шт.':
+                                varnishSum = 9300;
+                                break;
+                            case '1 500 шт.':
+                                varnishSum = 9700;
+                                break;
+                            case '1 600 шт.':
+                                varnishSum = 10100;
+                                break;
+                            case '1 700 шт.':
+                                varnishSum = 10500;
+                                break;
+                            case '1 800 шт.':
+                                varnishSum = 10900;
+                                break;
+                            case '1 900 шт.':
+                                varnishSum = 11300;
+                                break;
+                            case '2 000 шт.':
+                                varnishSum = 11700;
+                                break;
+                        }
+                    }
+                    if (this.cut == true) {
+                        switch (this.count) {
+                            case '50 шт.':
+                                cutSum = 6000;
+                                break;
+                            case '100 шт.':
+                                cutSum = 6100;
+                                break;
+                            case '150 шт.':
+                                cutSum = 6200;
+                                break;
+                            case '200 шт.':
+                                cutSum = 6300;
+                                break;
+                            case '250 шт.':
+                                cutSum = 6400;
+                                break;
+                            case '300 шт.':
+                                cutSum = 6500;
+                                break;
+                            case '400 шт.':
+                                cutSum = 6700;
+                                break;
+                            case '500 шт.':
+                                cutSum = 6900;
+                                break;
+                            case '600 шт.':
+                                cutSum = 7100;
+                                break;
+                            case '700 шт.':
+                                cutSum = 7300;
+                                break;
+                            case '800 шт.':
+                                cutSum = 7500;
+                                break;
+                            case '900 шт.':
+                                cutSum = 7700;
+                                break;
+                            case '1 000 шт.':
+                                cutSum = 7900;
+                                break;
+                            case '1 100 шт.':
+                                cutSum = 8100;
+                                break;
+                            case '1 200 шт.':
+                                cutSum = 8300;
+                                break;
+                            case '1 300 шт.':
+                                cutSum = 8500;
+                                break;
+                            case '1 400 шт.':
+                                cutSum = 8700;
+                                break;
+                            case '1 500 шт.':
+                                cutSum = 8900;
+                                break;
+                            case '1 600 шт.':
+                                cutSum = 9100;
+                                break;
+                            case '1 700 шт.':
+                                cutSum = 9300;
+                                break;
+                            case '1 800 шт.':
+                                cutSum = 9500;
+                                break;
+                            case '1 900 шт.':
+                                cutSum = 9700;
+                                break;
+                            case '2 000 шт.':
+                                cutSum = 9900;
+                                break;
+                        }
+                    }
+                    if (this.sticker == true) {
+                        switch (this.count) {
+                            case '50 шт.':
+                                stickerSum = 4000;
+                                break;
+                            case '100 шт.':
+                                stickerSum = 7000;
+                                break;
+                            case '150 шт.':
+                                stickerSum = 10000;
+                                break;
+                            case '200 шт.':
+                                stickerSum = 13000;
+                                break;
+                            case '250 шт.':
+                                stickerSum = 16000;
+                                break;
+                            case '300 шт.':
+                                stickerSum = 19000;
+                                break;
+                            case '400 шт.':
+                                stickerSum = 21000;
+                                break;
+                            case '500 шт.':
+                                stickerSum = 24000;
+                                break;
+                            case '600 шт.':
+                                stickerSum = 27000;
+                                break;
+                            case '700 шт.':
+                                stickerSum = 30000;
+                                break;
+                            case '800 шт.':
+                                stickerSum = 33000;
+                                break;
+                            case '900 шт.':
+                                stickerSum = 36000;
+                                break;
+                            case '1 000 шт.':
+                                stickerSum = 39000;
+                                break;
+                            case '1 100 шт.':
+                                stickerSum = 42000;
+                                break;
+                            case '1 200 шт.':
+                                stickerSum = 44000;
+                                break;
+                            case '1 300 шт.':
+                                stickerSum = 46000;
+                                break;
+                            case '1 400 шт.':
+                                stickerSum = 48000;
+                                break;
+                            case '1 500 шт.':
+                                stickerSum = 50000;
+                                break;
+                            case '1 600 шт.':
+                                stickerSum = 52000;
+                                break;
+                            case '1 700 шт.':
+                                stickerSum = 54000;
+                                break;
+                            case '1 800 шт.':
+                                stickerSum = 56000;
+                                break;
+                            case '1 900 шт.':
+                                stickerSum = 58000;
+                                break;
+                            case '2 000 шт.':
+                                stickerSum = 60000;
+                                break;
+                        }
+                    }
+                    if (this.package == true) {
+                        switch (this.count) {
+                            case '50 шт.':
+                                packageSum = 500;
+                                break;
+                            case '100 шт.':
+                                packageSum = 1000;
+                                break;
+                            case '150 шт.':
+                                packageSum = 1500;
+                                break;
+                            case '200 шт.':
+                                packageSum = 2000;
+                                break;
+                            case '250 шт.':
+                                packageSum = 2500;
+                                break;
+                            case '300 шт.':
+                                packageSum = 3000;
+                                break;
+                            case '400 шт.':
+                                packageSum = 3600;
+                                break;
+                            case '500 шт.':
+                                packageSum = 4500;
+                                break;
+                            case '600 шт.':
+                                packageSum = 5400;
+                                break;
+                            case '700 шт.':
+                                packageSum = 6300;
+                                break;
+                            case '800 шт.':
+                                packageSum = 7200;
+                                break;
+                            case '900 шт.':
+                                packageSum = 8100;
+                                break;
+                            case '1 000 шт.':
+                                packageSum = 9000;
+                                break;
+                            case '1 100 шт.':
+                                packageSum = 9400;
+                                break;
+                            case '1 200 шт.':
+                                packageSum = 9600;
+                                break;
+                            case '1 300 шт.':
+                                packageSum = 10400;
+                                break;
+                            case '1 400 шт.':
+                                packageSum = 11200;
+                                break;
+                            case '1 500 шт.':
+                                packageSum = 12000;
+                                break;
+                            case '1 600 шт.':
+                                packageSum = 12500;
+                                break;
+                            case '1 700 шт.':
+                                packageSum = 12800;
+                                break;
+                            case '1 800 шт.':
+                                packageSum = 13000;
+                                break;
+                            case '1 900 шт.':
+                                packageSum = 13300;
+                                break;
+                            case '2 000 шт.':
+                                packageSum = 14000;
+                                break;
+                        }
+                    }
+                    return result = result + varnishSum + cutSum + stickerSum + packageSum
+
+
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
